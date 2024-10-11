@@ -2,10 +2,10 @@ package creatures;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.Random;
 
-import activities.Wizard.Spell.EffectType;
-import activities.Wizard.Spell.Target;
+import action.Spell;
+import action.Spell.EffectType;
+import action.Spell.Target;
 
 public class Wizard extends Character {
 	private int maxMana;
@@ -33,7 +33,7 @@ public class Wizard extends Character {
 	private Dictionary<String, Spell> spellBook;
 
 	public void learnSpell(Spell spell) {
-		spellBook.put(spell.name, spell);
+		spellBook.put(spell.getName(), spell);
 	}
 
 	public Wizard(String name, int age, int maxHP, int maxMana) {
@@ -54,14 +54,14 @@ public class Wizard extends Character {
 	}
 
 	public void castSpell(Spell spell, Character target) {
-		if(mana > spell.manaCost) {
+		if(mana > spell.getManaCost()) {
 			System.out.println(getName() + ": " + callout);
-			System.out.println(spell.name + "!");
+			System.out.println(spell.getName() + "!");
 
 			int damage = spell.doEffect();
 			if(spell.effectType == EffectType.DAMAGE) {
 				target.takeDamage(damage);
-				System.out.println(target.getName() + " took " + damage + " " + spell.effect);
+				System.out.println(target.getName() + " took " + damage + " " + spell.getEffect());
 			} else if(spell.effectType == EffectType.HEAL) {
 				target.heal(damage);
 				System.out.println(target.getName() + " healed for " + damage);
@@ -84,47 +84,4 @@ public class Wizard extends Character {
 		}
 	}
 
-	public class Spell {
-		public enum EffectType {
-			DAMAGE, HEAL, ILLUSION
-		}
-
-		public enum Target {
-			SELF, OTHER
-		}
-
-		private String name;
-		private int manaCost;
-		private String effect;
-		private int damageDie;
-		private int diceCount;
-		public final Target target;
-		public final EffectType effectType;
-		
-
-		public Spell(String name, int manaCost, String effect, int damageDie, int diceCount, EffectType effectType, Target target) {
-			this.name = name;
-			this.manaCost = manaCost;
-			this.effect = effect;
-			this.damageDie = damageDie;
-			this.diceCount = diceCount;
-			this.effectType = effectType;
-			this.target = target;
-		}
-
-		public int doEffect() {
-			if(damageDie == 0) {
-				System.out.println(effect);
-				return 0;
-			} else {
-				System.out.println("Rolling " + diceCount + "d" + damageDie);
-				Random diceRoller = new Random();
-				int damage = 0;
-				for(int d = 0; d < diceCount; d++) {
-					damage += diceRoller.nextInt(damageDie) + 1;
-				}
-				return damage;
-			}
-		}
-	}
 }
