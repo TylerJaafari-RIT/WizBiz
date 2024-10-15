@@ -1,13 +1,13 @@
 package creatures;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.ArrayList;
 
 import action.*;
 
 public class Wizard extends Character {
 	private int maxMana;
 	private int mana;
+	private ArrayList<Spell> spellBook;
 
 	private String callout = "It's Wizard time, motherfucker!";
 
@@ -18,28 +18,50 @@ public class Wizard extends Character {
 	public String getCallout() { return callout; }
 	public void setCallout(String callout) { this.callout = callout; }
 
-	private Dictionary<String, Spell> spellBook;
+	public ArrayList<Spell> getSpellBook() { return spellBook; }
 
 	public void learnSpell(Spell spell) {
-		spellBook.put(spell.getName(), spell);
+		spellBook.add(spell);
 	}
 
-	public Wizard(String name, int age, int maxHP, int maxMana) {
-		super(name, age, maxHP);
+	public Wizard(String name, int speed, int maxHP, int maxMana) {
+		super(name, speed, maxHP);
 		this.maxMana = maxMana;
 		this.mana = maxMana;
-		this.spellBook = new Hashtable<>();
+		this.spellBook = new ArrayList<Spell>();
 
 		// this.learnSpell(new Spell("prestidigitation", 0, name + " looks very sparkly...", 0, 0));
 	}
 
+	/**
+	 * Casts a spell targetting this wizard.
+	 * @param spell
+	 */
+	public void castSpell(Spell spell) {
+		this.castSpell(spell, new Character[]{this});
+	}
+
 	public void castSpell(Spell spell, Character [] targets) {
+		System.out.println(spell);
 		if(mana > spell.getManaCost()) {
-			System.out.println(getName() + ": " + callout);
-			System.out.println(spell.getName() + "!");
+			System.out.print(getName() + ": " + callout);
+			System.out.println(" I cast " + spell.getName() + "!");
 
 			int impact = spell.calculateImpact();
+			if(impact != 0) System.out.println(" => " + impact);
+			for(Character target : targets) {
+				target.changeProperty(Property.HP, impact);
+				spell.inflictEffects(target);
+			}
+
+			mana -= spell.getManaCost();
 		}
+	}
+
+	@Override
+	public void passTurn() {
+		super.passTurn();
+		changeMana(50);
 	}
 
 	@Override
@@ -69,6 +91,11 @@ public class Wizard extends Character {
 	}
 
 	@Override
+	public void printStatus() {
+		super.printStatus();
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if(o instanceof Wizard) {
 			Wizard otherWiz = (Wizard)o;
@@ -77,5 +104,4 @@ public class Wizard extends Character {
 			return false;
 		}
 	}
-
 }

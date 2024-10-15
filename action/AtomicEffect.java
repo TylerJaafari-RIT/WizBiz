@@ -32,8 +32,21 @@ public class AtomicEffect implements Effect {
 	@Override
 	public void passTurn() {
 		duration--;
-		if(EFFECT_TYPE == EffectType.BURN || EFFECT_TYPE == EffectType.HEAL) {
-			AFFECTED_CHARACTER.changeProperty(AFFECTED_PROPERTY, IMPACT);
+		switch(EFFECT_TYPE) {
+			case BURN:
+				AFFECTED_CHARACTER.changeProperty(AFFECTED_PROPERTY, IMPACT);
+				System.out.println(AFFECTED_CHARACTER.getName() + " burned for " + Math.abs(IMPACT) + " damage.");
+				break;
+			case HEAL:
+				AFFECTED_CHARACTER.changeProperty(AFFECTED_PROPERTY, IMPACT);
+				System.out.println(AFFECTED_CHARACTER.getName() + " recovered " + IMPACT + " hit points.");
+				break;
+			case FORTIFY:
+				break;
+			case WEAKEN:
+				break;
+			default:
+				break;
 		}
 	}
 

@@ -48,7 +48,8 @@ public class EffectComposite implements Effect {
 	@Override
 	public void passTurn() {
 		for(Effect effect : effects) {
-			effect.passTurn();
+			if(effect != null)
+				effect.passTurn();
 		}
 	}
 
@@ -63,7 +64,7 @@ public class EffectComposite implements Effect {
 		for(int i = 0; i < effects.length; i++) {
 			if(effects[i] != null) {
 				if(effects[i] instanceof AtomicEffect) {
-					if(((AtomicEffect)effects[i]).getDuration() == 0) {
+					if(((AtomicEffect)effects[i]).getDuration() <= 0) {
 						effects[i] = null;
 					}
 				} else if(effects[i] instanceof EffectComposite) {
@@ -76,8 +77,9 @@ public class EffectComposite implements Effect {
 	@Override
 	public String toString() {
 		String str = "";
-		for (Effect effect : effects) {
-			str += effect.toString() + "\n";
+		for(Effect effect : effects) {
+			if(effect != null)
+				str += effect.toString() + "\n";
 		}
 		return str.trim();
 	}
